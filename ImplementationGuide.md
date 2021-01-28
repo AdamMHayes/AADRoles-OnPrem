@@ -6,6 +6,11 @@ This guide will walk you through the deployment steps for this solution. There a
 ## Architecture Prerequisites
 This guide assumes a hybrid identity envrionment where Azure AD Connect is used to synchronize on-premises groups to Azure AD.
 
+## Informational Prerequisites
+1. Have a test group that is synchronized from on-premises available with only a few users to test
+2. Determine what will be your first AAD role that you want to test with. I recommend something like Global Reader to ensure that any mistakes do not open you up to larger security risks
+3. As you go through this guide, you will be gathering some key information that will be needed later. Have a text editor handy to make notes
+
 ## Azure Resource Group Configuration
 As this was the first of many expected Azure Automation (AA) solutions in our Identity space, the decision was made to create an Azure Resource Group dedicated to the various pieces of this solution and future AA solutions around our Identity processes.
 1. Azure Portal > All Services > Resource groups > Create
@@ -15,7 +20,7 @@ As this was the first of many expected Azure Automation (AA) solutions in our Id
 ## Azure Storage Account
 ### Create the Storage Account
 This step will create the storage account you will use for table storage as part of this solution
-1. Azure Portal > Storage accounts > Create
+1. In the Azure Portal navigate to Storage accounts and select Create
 - Subscription: *Select the subscription where you created the Resource Group above*
 - Resource Group: *Select the Resource Group you created above*
 - Storage account name: *groupmembersyncsa*
@@ -58,13 +63,10 @@ This step will create the storage account you will use for table storage as part
 4. Once the Automation Account is created, select it in the console (you'll likely need to hit Refresh to see it)
 ### Set Azure AD App Registration Permissions
 1. Navigate to Azure Portal > Azure Active Directory > Roles and Administrators
-2. Select *Privileged role administrator* and add *AdminGroupSync* as a member
-3. Select *Group administrator* and add *AdminGroupSync* as a member
-4. Navigate to Azure Portal > Azure Active Directory > App registrations
-5. Search for *AdminGroupSync* and select it from the list
-6. Scroll down to API Permissions and add the following Microsoft Graph permissions:
-  - Group.Read.All
-  - GroupMember.ReadWrite.All
+2. Select *Group administrator* and add *AdminGroupSync* as a member
+3. Navigate to Azure Portal > Azure Active Directory > App registrations
+4. Search for *AdminGroupSync* and select it from the list
+5. Scroll down to API Permissions and add the following Microsoft Graph permissions:
   - User.Read.All
 ### Add PowerShell Modules
 1. Scroll down and select Shared Resouces > Modules gallery
@@ -87,6 +89,26 @@ This step will create the storage account you will use for table storage as part
   - Type: String
   - Value *The value of the access key you copied above from the storage account*
   - Encrypted **YES** \- This should be considered sensitive and encrypted
+### Run As Account Name
+1. Select Account Settings > Run as accounts
+2. Select the Azure Run As Account
+3. Copy the *Display Name* and save for future use
+### Add Scripts
+1. Select Process Automation > Runbooks
+2. Select \+ Create a runbook
+  - Name: GroupMemberSync-Add
+  - Runbook Type: PowerShell
+  - Description: Your discretion
+3. Paste the contents of GroupMemberSync-Add.ps1 from this Git into the body
+4. Review the connection strings for the body to ensure that Connect-AzureAD and Connect-AzAccount are set to the correct Azure envrionment.
+5. Select Save and Publish when you are done
+6. Select \+ Create a runbook
+  - Name: GroupMemberSync-Remove
+  - Runbook Type: PowerShell
+  - Description: Your discretion
+7. Paste the contents of GroupMemberSync-Add.ps1 from this Git into the body
+8. Review the connection strings for the body to ensure that Connect-AzureAD and Connect-AzAccount are set to the correct Azure envrionment.
+9. Select Save and Publish when you are done
 
 ## Azure AD Groups to be used for RBAC
 These steps will need to be repeated for each group you plan on assigning to Azure AD Roles
@@ -97,12 +119,16 @@ These steps will need to be repeated for each group you plan on assigning to Azu
 - Azure AD roles can be assigned to the group: *YES*
   - **NOTE:** This must be set during group creation. At this time, you cannot go back via the Portal and change this setting
 - Members: *No members selected*
-- Owner: 
+- Owner: *Add the DisplayName of the Azure Automation Run As Account* - NOTE: If this is missing, the AA runbook cannot add users to the group(s)
 - Group description and Owners are at your discretion
 ### Assign Group to Azure AD Role
 1. After the groups are created navigate to Azure Portal > Azure Active Directory > Roles and Administrators
 2. Select the role you are wanting to use and add the group(s) created above
 
-## Rename Azure AD App Registration (Optional)
-One of the annoying features for me is that when AA creates the Run As account for you, that AppRegistratoin ends up with a VERY hideous name. If you're like me and want to rename it, here's how:
-- Azure Portal > Azure Active Directory > App registrations 
+## Testing
+1. To test the solution, navigate back to the Azure Automation Account runbooks created above
+2. Select GroupMemberSync-Add and then select Start
+3. After this completes, review the onscreen output and the membership of your Destination group
+
+## Moving to Production
+Once you are getting consistent results with Adds and Removes, you can add a Schedule to your Azure Automation account and link the jobs. I would recommend staggering the jobs to avoid overlap.You can also modify the Add runbook to automatically call the Remove runbook at the end of script run so they run in series.
