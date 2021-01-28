@@ -2,10 +2,7 @@
 This solution was written to solve use-case where a client needed to be able to assign members of on-prem AD groups to AAD Roles.
 
 ## Client Overview
-Client is a highly distributed 60k+ workforce with distributed IT model across the globe
-Their Azure implementation is a federated hybrid identity on Microsoft Azure Government (MAG) using Azure AD Connect
-On-premises Active Directory is considered the “source of truth” for all identities (users, groups, etc)
-When new admin staff are hired, the client has an existing process to add these accounts to the appropriate on-premises administrative groups
+Client is a highly distributed 60k+ workforce with distributed IT model across the globe. Their Azure implementation is a federated hybrid identity on Microsoft Azure Government (MAG) using Azure AD Connect. On-premises Active Directory is considered the “source of truth” for all identities (users, groups, etc). When new admin staff are hired, the client has an existing process to add these accounts to the appropriate on-premises administrative groups
 
 ## Problem to Solve
 Client wanted to use existing on-premises Active Directory (AD) groups to assign Azure AD (AAD) Roles.
