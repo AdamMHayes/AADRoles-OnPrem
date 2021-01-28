@@ -119,7 +119,8 @@ These steps will need to be repeated for each group you plan on assigning to Azu
 - Azure AD roles can be assigned to the group: *YES*
   - **NOTE:** This must be set during group creation. At this time, you cannot go back via the Portal and change this setting
 - Members: *No members selected*
-- Owner: *Add the DisplayName of the Azure Automation Run As Account* - NOTE: If this is missing, the AA runbook cannot add users to the group(s)
+- Owner: *Add the DisplayName of the Azure Automation Run As Account* 
+  - **NOTE:** If this is missing, the AA runbook cannot add users to the group(s) as it is required as part of the Azure capability unless you grant much larger permissions across the entire tenant
 - Group description and Owners are at your discretion
 ### Assign Group to Azure AD Role
 1. After the groups are created navigate to Azure Portal > Azure Active Directory > Roles and Administrators
