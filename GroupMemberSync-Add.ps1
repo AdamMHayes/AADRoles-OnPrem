@@ -54,7 +54,7 @@ foreach ($row in $rows){
         $dGroup = get-azureadgroup -SearchString $destination | Where {$_.displayName -eq $destination}
         $dMembers = Get-AzureADGroupMember -ObjectId $dGroup.ObjectId
     }Catch{
-        Write-output "ERROR getting source group $($destination)"
+        Write-output "ERROR getting destination group $($destination)"
         continue
     }    
     foreach($member in $sMembers){
