@@ -1,6 +1,8 @@
 # AADRoles-OnPrem
 This solution was written to solve use-case where a client needed to be able to assign members of on-prem AD groups to AAD Roles.
 
+If you want to skip all of this overview and jump right in, go to the [Implementation Guide](https://github.com/theacerbic1/AADRoles-OnPrem/blob/main/ImplementationGuide.md)
+
 ## Client Overview
 Client is a highly distributed 60k+ workforce with distributed IT model across the globe. Their Azure implementation is a federated hybrid identity on Microsoft Azure Government (MAG) using Azure AD Connect. On-premises Active Directory is considered the “source of truth” for all identities (users, groups, etc). When new admin staff are hired, the client has an existing process to add these accounts to the appropriate on-premises administrative groups
 
