@@ -32,7 +32,7 @@ A new feature in Preview allows [Cloud Groups to Manage Role Assignments in Azur
   - Specific API permissions granted to RunAs account to limit security reach
 - PowerShell Modules
   - Azure AD module
-  - Az.Storage/Az.Resources/AzTable/Az.Account 
+  - Az.Storage/Az.Resources/AzTable/Az.Account/AzTable 
   - [Perform Azure Table storage operations with PowerShell | Microsoft Docs](https://docs.microsoft.com/en-us/azure/storage/tables/table-storage-how-to-use-powershell)
 - Azure Storage Explorer
   - To be able to read/review contents of Azure Storage table
