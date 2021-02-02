@@ -51,6 +51,22 @@ This step will create the storage account you will use for table storage as part
   - Type: *String*
   - Value: *The name of the Azure AD group created above*
 5. Close Azure Storage Explorer
+
+<table>
+  <tr>
+    <td>PartitionKey</td>
+    <td>RowKey</td>
+    <td>Source</td>
+    <td>Destination</td>
+  </tr>
+  <tr>
+    <td>RoleName1</td>
+    <td>1</td>
+    <td>OnPremGroupA</td>
+    <td>AADGroupA</td>
+  </tr>
+</table>
+
 ## Azure Automation Accounts
 ### Create the Automation Account
 1. Navigate to Azure Portal > All services > Automation Accounts
