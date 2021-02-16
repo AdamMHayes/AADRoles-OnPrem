@@ -45,14 +45,14 @@ foreach ($row in $rows){
     $destination = $row.Destination
     Try{
         $sGroup = Get-AzureADGroup -SearchString $source | Where {$_.displayName -eq $source}
-        $sMembers = Get-AzureADGroupMember -ObjectId $sGroup.ObjectId
+        $sMembers = Get-AzureADGroupMember -ObjectId $sGroup.ObjectId -All $true
     }Catch{
         Write-output "ERROR getting source group $($source)"
         continue
     }
     Try{
         $dGroup = get-azureadgroup -SearchString $destination | Where {$_.displayName -eq $destination}
-        $dMembers = Get-AzureADGroupMember -ObjectId $dGroup.ObjectId
+        $dMembers = Get-AzureADGroupMember -ObjectId $dGroup.ObjectId -All $true
     }Catch{
         Write-output "ERROR getting destination group $($destination)"
         continue
