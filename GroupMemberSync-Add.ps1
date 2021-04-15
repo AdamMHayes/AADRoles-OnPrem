@@ -19,8 +19,8 @@
 #>
 
 #Get Azure AD App registration details
-$connectionName="AzureRunAsConnection"
-$SPC=Get-AutomationConnection -Name $connectionName         
+$connectionName = "AzureRunAsConnection"
+$SPC = Get-AutomationConnection -Name $connectionName         
 
 #Connect to Azure AD
 Connect-AzureAD -TenantId $SPC.TenantId `
@@ -40,34 +40,39 @@ $context = New-AzStorageContext -StorageAccountName $storageAccountName -Storage
 $cloudtable = (Get-AzStorageTable -Name "AdminGroupSync" -Context $context).CloudTable
 $rows = Get-AzTableRow -Table $cloudtable
 
-foreach ($row in $rows){
-    $source=$row.Source
+foreach ($row in $rows) {
+    $source = $row.Source
     $destination = $row.Destination
-    Try{
-        $sGroup = Get-AzureADGroup -SearchString $source | Where {$_.displayName -eq $source}
+    Try {
+        $sGroup = Get-AzureADGroup -SearchString $source | Where { $_.displayName -eq $source }
         $sMembers = Get-AzureADGroupMember -ObjectId $sGroup.ObjectId -All $true
-    }Catch{
+    }
+    Catch {
         Write-output "ERROR getting source group $($source)"
         continue
     }
-    Try{
-        $dGroup = get-azureadgroup -SearchString $destination | Where {$_.displayName -eq $destination}
+    Try {
+        $dGroup = get-azureadgroup -SearchString $destination | Where { $_.displayName -eq $destination }
         $dMembers = Get-AzureADGroupMember -ObjectId $dGroup.ObjectId -All $true
-    }Catch{
+    }
+    Catch {
         Write-output "ERROR getting destination group $($destination)"
         continue
     }    
-    foreach($member in $sMembers){
-        if ($dMembers -notcontains $member){
-            Try{
+    foreach ($member in $sMembers) {
+        if ($dMembers -notcontains $member) {
+            Try {
                 Add-AzureADGroupMember -ObjectId $dGroup.ObjectID -RefObjectId $member.ObjectId
                 Write-Output "Success: $($dGroup.displayName)`t`t$($member.displayName) added "
-            }Catch{
+            }
+            Catch {
                 Write-Output "ERROR: Failed to add $($member.displayName) to $($dGroup.displayName)"
                 continue
             }
-        }else{
+        }
+        else {
             Write-Output "SKIP: $($dGroup.displayName)`t`t`t $($member.displayName) already a member"
         }
     }
 }
+#test
